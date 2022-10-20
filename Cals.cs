@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,50 +6,160 @@ using System.Threading.Tasks;
 
 namespace cals
 {
-    class Program
-{ 
-    static void Main(string[] args)
+    class Cals
     {
-        string arg;
-        Stack<double> st = new Stack<double>();
 
-        while ((arg = Console.ReadLine()) != "exit")
+        
+        static public double Calculate(string input)
         {
-            double num;
-            bool isNum = double.TryParse(arg, out num);
-            if (isNum)
-                st.Push(num);
-            else
+            string output = GetExpression(input); //Преобразовываем выражение в постфиксную запись
+            double result = Counting(output); //Решаем полученное выражение
+            return result; //Возвращаем результат
+        }
+        static private string GetExpression(string input)
+        {
+            string output = string.Empty; //Строка для хранения выражения
+            Stack<char> operStack = new Stack<char>(); //Стек для хранения операторов
+
+            for (int i = 0; i < input.Length; i++) 
             {
-                double op2;
-                switch (arg)
+                //Пропускаем разделители
+                if (IsDelimeter(input[i]))
+                    continue; //Переходим к следующему символу
+
+                //Если символ - цифра, то считываем все число
+                if (Char.IsDigit(input[i])) //Если цифра
                 {
-                    case "+":
-                        st.Push(st.Pop() + st.Pop());
-                        break;
-                    case "*":
-                        st.Push(st.Pop() * st.Pop());
-                        break;
-                    case "-":
-                        op2 = st.Pop();
-                        st.Push(st.Pop() - op2);
-                        break;
-                    case "/":
-                        op2 = st.Pop();
-                            if (op2 != 0.0)
-                                st.Push(st.Pop() / op2);
-                            else
-                                Console.WriteLine("Ошибка.Деление на ноль.");
-                        break;
-                    case "=":
-                        Console.WriteLine("Результат:" + st.Pop());
-                        break;
-                    default:
-                        Console.WriteLine("Ошибка.Неизвесная команда.");
-                        break;
+                    //Читаем до разделителя или оператора, что бы получить число
+                    while (!IsDelimeter(input[i]) && !IsOperator(input[i]))
+                    {
+                        output += input[i]; //Добавляем каждую цифру числа к нашей строке
+                        i++; //Переходим к следующему символу
+
+                        if (i == input.Length) break; //Если символ - последний, то выходим из цикла
+                    }
+
+                    output += " "; //Дописываем после числа пробел в строку с выражением
+                    i--; //Возвращаемся на один символ назад, к символу перед разделителем
+                }
+
+                //Если символ - оператор
+                if (IsOperator(input[i])) 
+                {
+                    if (input[i] == '(') //Если символ - открывающая скобка
+                        operStack.Push(input[i]); //Записываем её в стек
+                    else if (input[i] == ')') //Если символ - закрывающая скобка
+                    {
+                        //Выписываем все операторы до открывающей скобки в строку
+                        char s = operStack.Pop();
+
+                        while (s != '(')
+                        {
+                            output += s.ToString() + ' ';
+                            s = operStack.Pop();
+                        }
+                    }
+                    else //Если любой другой оператор
+                    {
+                        if (operStack.Count > 0) //Если в стеке есть элементы
+                            if (GetPriority(input[i]) <= GetPriority(operStack.Peek())) //И если приоритет нашего оператора меньше или равен приоритету оператора на вершине стека
+                                output += operStack.Pop().ToString() + " "; //То добавляем последний оператор из стека в строку с выражением
+
+                        operStack.Push(char.Parse(input[i].ToString())); //Если стек пуст, или же приоритет оператора выше - добавляем операторов на вершину стека
+
                     }
                 }
             }
+
+            //Когда прошли по всем символам, выкидываем из стека все оставшиеся там операторы в строку
+            while (operStack.Count > 0)
+                output += operStack.Pop() + " ";
+
+            return output; //Возвращаем выражение в постфиксной записи
+        }
+
+        static private double Counting(string input)
+        {
+            double result = 0; //Результат
+            Stack<double> temp = new Stack<double>(); //Временный стек для решения
+
+            for (int i = 0; i < input.Length; i++) //Для каждого символа в строке
+            {
+                //Если символ - цифра, то читаем все число и записываем на вершину стека
+                if (Char.IsDigit(input[i]))
+                {
+                    string a = string.Empty;
+
+                    while (!IsDelimeter(input[i]) && !IsOperator(input[i])) 
+                    {
+                        a += input[i]; //Добавляем
+                        i++;
+                        if (i == input.Length) break;
+                    }
+                    temp.Push(double.Parse(a)); //Записываем в стек
+                    i--;
+                }
+                else if (IsOperator(input[i])) //Если символ - оператор
+                {
+                    //Берем два последних значения из стека
+                    double a = temp.Pop();
+                    double b = temp.Pop();
+
+                    switch (input[i]) //И производим над ними действие, согласно оператору
+                    {
+                        case '+': result = b + a; break;
+                        case '-': result = b - a; break;
+                        case '*': result = b * a; break;
+                        case '/': result = b / a; break;
+                     
+                    }
+                    temp.Push(result); //Результат вычисления записываем обратно в стек
+                }
+            }
+            return temp.Peek(); //Забираем результат всех вычислений из стека и возвращаем его
+        }
+        //Метод возвращает true, если проверяемый символ - разделитель ("пробел" или "равно")
+        static private bool IsDelimeter(char c)
+        {
+            if ((" =".IndexOf(c) != -1))
+                return true;
+            return false;
+        }
+
+        //Метод возвращает true, если проверяемый символ - оператор
+        static private bool IsOperator(char с)
+        {
+            if (("+-/*()".IndexOf(с) != -1))
+                return true;
+            return false;
+        }
+        //Метод возвращает приоритет оператора
+        static private byte GetPriority(char s)
+        {
+            switch (s)
+            {
+                case '(': return 0;
+                case ')': return 1;
+                case '+': return 2;
+                case '-': return 3;
+                case '*': return 4;
+                case '/': return 4;
+                default: return 5;
+            }
+        }
+
+
+
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            while (true) 
+            {
+                Console.Write("Введите выражение: "); 
+                Console.WriteLine(Cals.Calculate(Console.ReadLine())); //Считываем, и выводим результат
+            }
         }
     }
-}
+} 
