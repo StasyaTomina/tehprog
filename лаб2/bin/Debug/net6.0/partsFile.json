@@ -1,0 +1,29 @@
+[
+  {
+    "NumberPost": 10,
+    "NamePost": "Administrator",
+    "Id": {
+      "SotrudnikId": 1,
+      "Fio": "Petrov Ivan",
+      "Age": "45"
+    }
+  },
+  {
+    "NumberPost": 11,
+    "NamePost": "Sekretar",
+    "Id": {
+      "SotrudnikId": 2,
+      "Fio": "Sidorov Sidor",
+      "Age": "24"
+    }
+  },
+  {
+    "NumberPost": 12,
+    "NamePost": "Meneger",
+    "Id": {
+      "SotrudnikId": 3,
+      "Fio": "Ivanov Ivan ",
+      "Age": "30"
+    }
+  }
+]
