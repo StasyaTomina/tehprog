@@ -1,6 +1,0 @@
-C:\Users\tad20\OneDrive\Рабочий стол\техпрог\lab2_3_tp\obj\Debug\net6.0\lab2_3_tp.csproj.AssemblyReference.cache
-C:\Users\tad20\OneDrive\Рабочий стол\техпрог\lab2_3_tp\obj\Debug\net6.0\lab2_3_tp.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\tad20\OneDrive\Рабочий стол\техпрог\lab2_3_tp\obj\Debug\net6.0\lab2_3_tp.AssemblyInfoInputs.cache
-C:\Users\tad20\OneDrive\Рабочий стол\техпрог\lab2_3_tp\obj\Debug\net6.0\lab2_3_tp.AssemblyInfo.cs
-C:\Users\tad20\OneDrive\Рабочий стол\техпрог\lab2_3_tp\obj\Debug\net6.0\lab2_3_tp.csproj.CoreCompileInputs.cache
-C:\Users\tad20\OneDrive\Рабочий стол\техпрог\lab2_3_tp\obj\Debug\net6.0\EFCoreSqlServerNetTopologySuite.cs
