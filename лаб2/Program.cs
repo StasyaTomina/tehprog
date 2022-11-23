@@ -1,51 +1,54 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace SerializeBasic
+namespace Program
 {
 
     public class Post
     {
-        public int NumberPost { get; set; }
+        public int Id { get; set; }
         public string NamePost{ get; set; }
 
-        public Sotrudniks Id { get; set; }
+        public Employee EmployeeId   { get; set; }
 
         public Post() { }
 
-        public Post(int numberPost, string namePost, Sotrudniks id)
+        public Post(int id , string namePost, Employee employeeId)
         {
             Id = id;
-            NumberPost = numberPost;
             NamePost = namePost;
+            EmployeeId = employeeId;
             
         }
     }
-    public class Sotrudniks
+    public class Employee
+
     {
-        public int SotrudnikId { get; set; }
-        public string Fio { get; set; }
+        public int Id { get; set; }
+        public string Surname { get; set; }
         public string Age { get; set; }
 
-        public Sotrudniks() { }
+        public Employee
+() { }
 
-        public Sotrudniks(int sotrudnikId, string fio, string age)
+        public Employee(int id, string surname, string age)
         {
-            SotrudnikId = sotrudnikId;
-            Fio = fio;
+            Id = id;
+            Surname = surname;
             Age = age;
         }
     }
+    
     public class JsonHandler<Lb> where Lb : class
     {
         private string fileName;
         JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
 
-
+        
         public JsonHandler() { }
 
         public JsonHandler(string fileName)
@@ -121,10 +124,10 @@ namespace SerializeBasic
 
             JsonHandler<Post> partsHandler = new JsonHandler<Post>("partsFile.json");
 
-            partsList.Add(new Post(10, "Administrator", new Sotrudniks(1, "Petrov Ivan", "45")));
-            partsList.Add(new Post(11, "Sekretar", new Sotrudniks(2, "Sidorov Sidor", "24")));
-            partsList.Add(new Post(12, "Meneger", new Sotrudniks(3,"Ivanov Ivan ", "30")));
-            partsList.Remove(new Post(10, "Administrator" , new Sotrudniks(1, "Petrov Ivan", "24")));
+            partsList.Add(new Post(10, "Administrator", new Employee(1, "Petrov Ivan", "45")));
+            partsList.Add(new Post(11, "Sekretar", new Employee(2, "Sidorov Sidor", "24")));
+            partsList.Add(new Post(12, "Meneger", new Employee(3,"Ivanov Ivan ", "30")));
+            partsList.Remove(new Post(10, "Administrator" , new Employee(1, "Petrov Ivan", "24")));
            
 
             partsHandler.Rewrite(partsList);
