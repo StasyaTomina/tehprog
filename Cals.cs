@@ -8,7 +8,8 @@ namespace cals
 {
     class Program
     {
-          static public double Calculate(string input)
+       
+        static public double Calculate(string input)
         {
             string output = GetExpression(input);
             double result = Counting(output);
@@ -23,7 +24,6 @@ namespace cals
             for (int i = 0; i < input.Length; i++)
 
             {
-                //Если символ - цифра
                 if (Char.IsDigit(input[i]))
                 {
                     output += Checknumber(input, i);
@@ -47,6 +47,35 @@ namespace cals
                 output += operStack.Pop() + " ";
             return output;
         }
+        static private double Counting(string input)
+        {
+
+            {
+                double result = 0;
+                Stack<double> temp = new Stack<double>();
+
+                for (int i = 0; i < input.Length; i++)
+                {
+
+                    if (Char.IsDigit(input[i]))
+
+                    {
+                        string a = string.Empty;
+
+                        a += Variable(a, input, i, temp);
+                        i += valueI(input, i);
+                        temp.Push(double.Parse(a));
+                        i--;
+                    }
+                    else if (IsOperator(input[i]))
+                    {
+                        result = Сounting(input, i, result, temp);
+                        temp.Push(result);
+                    }
+                }
+                return temp.Peek();
+            }
+        }
         public static string Checknumber(string input, int i)
         {
             string output = string.Empty;
@@ -61,7 +90,7 @@ namespace cals
 
         public static string CheckOperator(string input, int i, string output, Stack<char> operStack)
         {
-            //Если символ - оператор
+
             if (input[i] == '(')
 
                 operStack.Push(input[i]);
@@ -78,9 +107,9 @@ namespace cals
                     s = operStack.Pop();
                 }
             }
-            else 
+            else
             {
-                if (operStack.Count > 0) 
+                if (operStack.Count > 0)
                     if (GetPriority(input[i]) <= GetPriority(operStack.Peek()))
                         output += operStack.Pop().ToString() + " ";
 
@@ -89,59 +118,39 @@ namespace cals
             }
             return output;
         }
-    }
-
-
-            
-            while (operStack.Count > 0)
-                output += operStack.Pop() + " ";
-
-            return output; 
-        }
-
-
-        static private double Counting(string input)
+        public static string Variable(string a, string input, int i, Stack<double> temp)
         {
-    double result = 0;
-            Stack<double> temp = new Stack<double>(); 
-
-            for (int i = 0; i < input.Length; i++) 
+            while (!IsDelimeter(input[i]) && !IsOperator(input[i]))
             {
-                
-                if (Char.IsDigit(input[i]))
-                    
-                {
-                    string a = string.Empty;
-
-                    while (!IsDelimeter(input[i]) && !IsOperator(input[i])) 
-                    {
-                        a += input[i]; 
-                        i++;
-                        if (i == input.Length) break;
-                    }
-                    temp.Push(double.Parse(a));  
-                    i--;
-                }
-                else if (IsOperator(input[i]))  
-                {
-                   
-                    double a = temp.Pop();
-                    double b = temp.Pop();
-
-                    switch (input[i]) 
-                    {
-                        case '+': result = b + a; break;
-                        case '-': result = b - a; break;
-                        case '*': result = b * a; break;
-                        case '/': result = b / a; break;
-                     
-                    }
-                    temp.Push(result); 
-                }
+                a += input[i];
+                i++;
+                if (i == input.Length) break;
             }
-            return temp.Peek(); 
+            return a;
         }
-                    
+        public static int valueI(string input, int i)
+        {
+            while (!IsDelimeter(input[i]) && !IsOperator(input[i]))
+            {
+                i++;
+                if (i == input.Length) break;
+            }
+            i--;
+            return i;
+        }
+        public static double Сounting(string input, int i, double result, Stack<double> temp)
+        {
+            double a = temp.Pop();
+            double b = temp.Pop();
+            switch (input[i])
+            {
+                case '+': result = b + a; break;
+                case '-': result = b - a; break;
+                case '*': result = b * a; break;
+                case '/': result = b / a; break;
+            }
+            return result;
+        }
         static private bool IsDelimeter(char c)
         {
             return " =".IndexOf(c) != -1;
@@ -163,18 +172,21 @@ namespace cals
                 default: return 5;
             }
         }
+    }
 
 
-    
 
-    class Program1
+    class Cals
+
     {
         static void Main(string[] args)
         {
-            while (true) 
+            while (true)
             {
-                Console.Write("Введите выражение: "); 
+                Console.Write("Введите выражение: ");
                 Console.WriteLine(Program.Calculate(Console.ReadLine())); //Считываем, и выводим результат
             }
         }
     }
+}
+
