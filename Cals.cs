@@ -7,22 +7,20 @@ using System.Threading.Tasks;
 namespace cals
 {
     class Program
-    {
-       
+    {       
         static public double Calculate(string input)
         {
             string output = GetExpression(input);
             double result = Counting(output);
             return result;
         }
+        
         static private string GetExpression(string input)
         {
             string output = string.Empty;
             Stack<char> operStack = new Stack<char>();
 
-
             for (int i = 0; i < input.Length; i++)
-
             {
                 if (Char.IsDigit(input[i]))
                 {
@@ -31,7 +29,6 @@ namespace cals
                     while (!IsDelimeter(input[i]) && !IsOperator(input[i]))
                     {
                         i++;
-
                         if (i == input.Length) break;
                     }
 
@@ -43,38 +40,34 @@ namespace cals
                     output += CheckOperator(input, i, output, operStack)
                 }
             }
-            while (operStack.Count > 0)
+            while (operStack.Count > 0) 
                 output += operStack.Pop() + " ";
             return output;
         }
+        
         static private double Counting(string input)
         {
+            double result = 0;
+            Stack<double> temp = new Stack<double>();
 
+            for (int i = 0; i < input.Length; i++)
             {
-                double result = 0;
-                Stack<double> temp = new Stack<double>();
-
-                for (int i = 0; i < input.Length; i++)
+                if (Char.IsDigit(input[i]))
                 {
+                    string a = string.Empty;
 
-                    if (Char.IsDigit(input[i]))
-
-                    {
-                        string a = string.Empty;
-
-                        a += Variable(a, input, i, temp);
-                        i += valueI(input, i);
-                        temp.Push(double.Parse(a));
-                        i--;
-                    }
-                    else if (IsOperator(input[i]))
-                    {
-                        result = Сounting(input, i, result, temp);
-                        temp.Push(result);
-                    }
+                    a += Variable(a, input, i, temp);
+                    i += valueI(input, i);
+                    temp.Push(double.Parse(a));
+                    i--;
                 }
-                return temp.Peek();
+                else if (IsOperator(input[i]))
+                {
+                    result = Сounting(input, i, result, temp);
+                    temp.Push(result);
+                }
             }
+            return temp.Peek();
         }
         public static string Checknumber(string input, int i)
         {
@@ -90,34 +83,33 @@ namespace cals
 
         public static string CheckOperator(string input, int i, string output, Stack<char> operStack)
         {
-
             if (input[i] == '(')
-
+            {
                 operStack.Push(input[i]);
-
+            }
             else if (input[i] == ')')
             {
-
                 char s = operStack.Pop();
 
                 while (s != '(')
                 {
                     output += s.ToString() + ' ';
-
                     s = operStack.Pop();
                 }
             }
             else
             {
-                if (operStack.Count > 0)
-                    if (GetPriority(input[i]) <= GetPriority(operStack.Peek()))
-                        output += operStack.Pop().ToString() + " ";
+                var operatorsExists = operStack.Count > 0;
+                var stackOperatorHasHigherPrioirty = GetPriority(input[i]) <= GetPriority(operStack.Peek());
+                if (operatorsExists && stackOperatorHasHigherPriority)
+                    output += operStack.Pop() + " ";
 
-                operStack.Push(char.Parse(input[i].ToString()));
+                operStack.Push(input[i]);
 
             }
             return output;
         }
+        
         public static string Variable(string a, string input, int i, Stack<double> temp)
         {
             while (!IsDelimeter(input[i]) && !IsOperator(input[i]))
@@ -128,6 +120,7 @@ namespace cals
             }
             return a;
         }
+        
         public static int valueI(string input, int i)
         {
             while (!IsDelimeter(input[i]) && !IsOperator(input[i]))
@@ -138,6 +131,7 @@ namespace cals
             i--;
             return i;
         }
+        
         public static double Сounting(string input, int i, double result, Stack<double> temp)
         {
             double a = temp.Pop();
@@ -151,14 +145,17 @@ namespace cals
             }
             return result;
         }
+        
         static private bool IsDelimeter(char c)
         {
             return " =".IndexOf(c) != -1;
         }
+        
         private static bool IsOperator(char c)
         {
             return "+-/*()".IndexOf(c) != -1;
         }
+        
         static private byte GetPriority(char s)
         {
             switch (s)
@@ -174,10 +171,7 @@ namespace cals
         }
     }
 
-
-
     class Cals
-
     {
         static void Main(string[] args)
         {
